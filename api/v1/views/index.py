@@ -1,30 +1,31 @@
 #!/usr/bin/python3
-"""index"""
+"""index file, main view file
+"""
 from api.v1.views import app_views
 from flask import jsonify
 from models import storage
-from models.user import User
-from models.place import Place
-from models.state import State
-from models.city import City
-from models.amenity import Amenity
-from models.review import Review
-
-classes = {"users": "User", "places": "Place", "states": "State",
-           "cities": "City", "amenities": "Amenity",
-           "reviews": "Review"}
 
 
-@app_views.route('/status', methods=['GET'])
-def status():
-    ''' routes to status page '''
+@app_views.route('/status', strict_slashes=False)
+def service_status():
+    """returns the status of the RESTful service"""
+    """ TODO check if this formatting is okay for json response with
+        holberton checker """
     return jsonify({'status': 'OK'})
 
 
-@app_views.route('/stats', methods=['GET'])
-def count():
-    '''retrieves the number of each objects by type'''
-    count_dict = {}
-    for cls in classes:
-        count_dict[cls] = storage.count(classes[cls])
-    return jsonify(count_dict)
+@app_views.route('/stats', strict_slashes=False)
+def object_stats():
+    """returns the count of object types"""
+
+    classes = {
+        "amenities": "Amenity",
+        "cities": "City",
+        "places": "Place",
+        "reviews": "Review",
+        "states": "State",
+        "users": "User"
+        }
+    for k, v in classes.items():
+        classes[k] = storage.count(v)
+    return jsonify(classes)
